@@ -1,4 +1,9 @@
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, flash, send_from_directory
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_wtf import FlaskForm
+from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Length, EqualTo
 import MySQLdb
 import os
 from werkzeug.utils import secure_filename
@@ -11,7 +16,93 @@ app.config['UPLOAD_FOLDER'] = 'archivos'
 # Configuración de la base de datos
 db = MySQLdb.connect(user='bernal', passwd='bernal9913', host='localhost', db='digitalizacion_archivos')
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+class User(UserMixin):
+    def __init__(self, id, nombre, numero_empleado, rol, password):
+        self.id = id
+        self.nombre = nombre
+        self.numero_empleado = numero_empleado
+        self.rol = rol
+        self.password = password
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    cursor = db.cursor()
+    cursor.execute('SELECT id, nombre, numero_empleado, rol, password FROM usuarios WHERE id = %s', (user_id,))
+    user = cursor.fetchone()
+    if user:
+        return User(*user)
+    return None
+
+
+# Formularios
+class LoginForm(FlaskForm):
+    numero_empleado = IntegerField('Número de Empleado', validators=[DataRequired()])
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    submit = SubmitField('Ingresar')
+
+
+class RegisterForm(FlaskForm):
+    nombre = StringField('Nombre', validators=[DataRequired(), Length(min=2, max=100)])
+    numero_empleado = IntegerField('Número de Empleado', validators=[DataRequired()])
+    rol = StringField('Rol', validators=[DataRequired(), Length(max=50)])
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirmar Contraseña', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrar')
+
+
+# Rutas
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        nombre = form.nombre.data
+        numero_empleado = form.numero_empleado.data
+        rol = form.rol.data
+        password = generate_password_hash(form.password.data)
+
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO usuarios (nombre, numero_empleado, rol, password) VALUES (%s, %s, %s, %s)',
+                       (nombre, numero_empleado, rol, password))
+        db.commit()
+        flash('Usuario registrado exitosamente', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        numero_empleado = form.numero_empleado.data
+        password = form.password.data
+
+        cursor = db.cursor()
+        cursor.execute('SELECT id, nombre, numero_empleado, rol, password FROM usuarios WHERE numero_empleado = %s',
+                       (numero_empleado,))
+        user = cursor.fetchone()
+        if user and check_password_hash(user[4], password):
+            user_obj = User(*user)
+            login_user(user_obj)
+            return redirect(url_for('index'))
+        flash('Número de empleado o contraseña incorrectos', 'danger')
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
     if request.method == 'POST':
         asunto = request.form['asunto']
@@ -29,7 +120,9 @@ def index():
         sql = """INSERT INTO archivos (asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen)
                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         fecha_subida = datetime.now()
-        cursor.execute(sql, (asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen))
+        cursor.execute(sql, (
+        asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor,
+        remitente, resumen))
         db.commit()
         archivo_id = cursor.lastrowid
 
@@ -45,6 +138,36 @@ def index():
 
     return render_template('index.html')
 
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    query = "SELECT id, asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen FROM archivos"
+    search = request.args.get('search')
+    if search:
+        search_query = "%" + search + "%"
+        query += " WHERE asunto LIKE %s OR numero_oficio LIKE %s OR unidad_administrativa LIKE %s OR emisor LIKE %s OR remitente LIKE %s OR resumen LIKE %s"
+        cursor = db.cursor()
+        cursor.execute(query, (search_query, search_query, search_query, search_query, search_query, search_query))
+    else:
+        cursor = db.cursor()
+        cursor.execute(query)
+
+    archivos = cursor.fetchall()
+    return render_template('dashboard.html', archivos=archivos, search=search)
+
+
+@app.route('/archivo/<int:archivo_id>')
+@login_required
+def ver_archivo(archivo_id):
+    archivo_path = os.path.join(app.config['UPLOAD_FOLDER'], str(archivo_id))
+    if os.path.exists(archivo_path):
+        archivos = os.listdir(archivo_path)
+        if archivos:
+            return send_from_directory(archivo_path, archivos[0])
+    flash('Archivo no encontrado', 'danger')
+    return redirect(url_for('dashboard'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-    # git: JuanCarlosBL
