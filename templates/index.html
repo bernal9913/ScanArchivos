@@ -1,70 +1,74 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Subir Archivo</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  </head>
-  <body>
-  {% extends "base.html" %}
-
-  {% block title %}Subir archivo{% endblock %}
-
-  {% block content %}
-    <div class="container">
-      <h1 class="mt-5">Subir Archivo</h1>
-      {% with messages = get_flashed_messages(with_categories=true) %}
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Subir Archivo</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           <div class="alert alert-success">
             {{ messages[0][1] }}
           </div>
         {% endif %}
-      {% endwith %}
-      <form method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="asunto">Asunto</label>
-          <input type="text" class="form-control" id="asunto" name="asunto" required>
-        </div>
-        <div class="form-group">
-          <label for="numero_oficio">Número de Oficio</label>
-          <input type="text" class="form-control" id="numero_oficio" name="numero_oficio" required>
-        </div>
-        <div class="form-group">
-          <label for="fecha_creacion">Fecha de Creación</label>
-          <input type="date" class="form-control" id="fecha_creacion" name="fecha_creacion" required>
-        </div>
-        <div class="form-group">
-          <label for="unidad_administrativa">Unidad Administrativa</label>
-          <input type="text" class="form-control" id="unidad_administrativa" name="unidad_administrativa" required>
-        </div>
-        <div class="form-group">
-          <label for="folio_inicial">Folio Inicial</label>
-          <input type="number" class="form-control" id="folio_inicial" name="folio_inicial" required>
-        </div>
-        <div class="form-group">
-          <label for="folio_final">Folio Final</label>
-          <input type="number" class="form-control" id="folio_final" name="folio_final" required>
-        </div>
-        <div class="form-group">
-          <label for="emisor">Emisor</label>
-          <input type="text" class="form-control" id="emisor" name="emisor" required>
-        </div>
-        <div class="form-group">
-          <label for="remitente">Remitente</label>
-          <input type="text" class="form-control" id="remitente" name="remitente" required>
-        </div>
-        <div class="form-group">
-          <label for="resumen">Resumen</label>
-          <textarea class="form-control" id="resumen" name="resumen" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="archivo">Archivo</label>
-          <input type="file" class="form-control-file" id="archivo" name="archivo" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Subir</button>
-      </form>
+    {% endwith %}
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="asunto">Asunto</label>
+      <input type="text" name="asunto" class="form-control" required>
     </div>
-  </body>
+    <div class="form-group">
+      <label for="numero_oficio">Número de Oficio</label>
+      <input type="text" name="numero_oficio" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="fecha_creacion">Fecha de Creación</label>
+      <input type="date" name="fecha_creacion" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="unidad_administrativa">Unidad Administrativa</label>
+      <input type="text" name="unidad_administrativa" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="folio_inicial">Folio Inicial</label>
+      <input type="text" name="folio_inicial" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="folio_final">Folio Final</label>
+      <input type="text" name="folio_final" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="emisor">Emisor</label>
+      <input type="text" name="emisor" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="remitente">Remitente</label>
+      <input type="text" name="remitente" class="form-control" required>
+    </div>
+      <div class="form-group">
+      <label for="categoria">Categoría</label>
+      <select name="categoria" id="categoria" class="form-control" required>
+        {% for categoria in categorias %}
+        <option value="{{ categoria[0] }}">{{ categoria[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="subcategoria">Subcategoría</label>
+      <select name="subcategoria" id="subcategoria" class="form-control" required>
+        {% for subcategoria in subcategorias %}
+        <option value="{{ subcategoria[0] }}">{{ subcategoria[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="resumen">Resumen</label>
+      <textarea name="resumen" class="form-control" rows="3" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="archivo">Archivo</label>
+      <input type="file" name="archivo" class="form-control-file" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Subir</button>
+  </form>
+</div>
 {% endblock %}
-</html>

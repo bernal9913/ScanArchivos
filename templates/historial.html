@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Historial de Versiones{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Historial de Versiones</h1>
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>Acción</th>
+        <th>Fecha</th>
+        <th>Nombre</th>
+        <th>Detalles</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for version in versiones %}
+      <tr>
+        <td>{{ version[0] }}</td>
+        <td>{{ version[1] }}</td>
+        <td>{{ version[2] }}</td>
+        <td>{{ version[3] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

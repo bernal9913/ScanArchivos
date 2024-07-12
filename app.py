@@ -30,6 +30,14 @@ class User(UserMixin):
         self.password = password
 
 
+def registrar_historial(documento_id, accion, detalles=""):
+    cursor = db.cursor()
+    sql = """INSERT INTO historial_versiones (documento_id, accion, usuario_id, detalles) 
+             VALUES (%s, %s, %s, %s)"""
+    cursor.execute(sql, (documento_id, accion, current_user.id, detalles))
+    db.commit()
+
+
 @login_manager.user_loader
 def load_user(user_id):
     cursor = db.cursor()
@@ -104,7 +112,17 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    cursor = db.cursor()
+    cursor.execute("SELECT id, nombre FROM categorias")
+    cat = cursor.fetchall()
+    print(cat)
+
+    cursor.execute("SELECT id, nombre FROM subcategorias")
+    subcat = cursor.fetchall()
+    print(subcat)
+
     if request.method == 'POST':
+        # Obtener los datos del formulario
         asunto = request.form['asunto']
         numero_oficio = request.form['numero_oficio']
         fecha_creacion = request.form['fecha_creacion']
@@ -114,16 +132,23 @@ def index():
         emisor = request.form['emisor']
         remitente = request.form['remitente']
         resumen = request.form['resumen']
+        categoria_id = request.form['categoria']
+        subcategoria_id = request.form['subcategoria']
         archivo = request.files['archivo']
 
-        cursor = db.cursor()
-        sql = """INSERT INTO archivos (asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen)
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        fecha_subida = datetime.now()
+        # Guardar el archivo en la carpeta correspondiente
+        fecha_subida = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        sql = """INSERT INTO archivos (asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen, categoria_id, subcategoria_id) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         cursor.execute(sql, (
         asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor,
-        remitente, resumen))
+        remitente, resumen, categoria_id, subcategoria_id))
+        documento_id = cursor.lastrowid
         db.commit()
+
+        # archivo.save(os.path.join(app.config['UPLOAD_FOLDER'], str(documento_id)))
+
+        # Registrar la acción en el historial
         archivo_id = cursor.lastrowid
 
         if archivo:
@@ -134,27 +159,37 @@ def index():
             archivo.save(os.path.join(archivo_path, filename))
 
             flash('Archivo subido y datos guardados correctamente', 'success')
+            registrar_historial(documento_id, "subido", f"Archivo subido: {archivo.filename}")
             return redirect(url_for('index'))
 
-    return render_template('index.html')
+    return render_template('index.html', categorias=cat, subcategorias=subcat)
 
-
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
-    query = "SELECT id, asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen FROM archivos"
-    search = request.args.get('search')
-    if search:
-        search_query = "%" + search + "%"
-        query += " WHERE asunto LIKE %s OR numero_oficio LIKE %s OR unidad_administrativa LIKE %s OR emisor LIKE %s OR remitente LIKE %s OR resumen LIKE %s"
-        cursor = db.cursor()
-        cursor.execute(query, (search_query, search_query, search_query, search_query, search_query, search_query))
+    search_query = request.args.get('search')
+    cursor = db.cursor()
+
+    if search_query:
+        sql = """SELECT archivos.id, asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen, categorias.nombre, subcategorias.nombre
+                 FROM archivos 
+                 INNER JOIN categorias on archivos.categoria_id = categorias.id
+                 INNER JOIN subcategorias on archivos.subcategoria_id = subcategorias.id
+                 WHERE asunto LIKE %s OR numero_oficio LIKE %s OR emisor LIKE %s OR remitente LIKE %s
+                 """
+
+        cursor.execute(sql, (
+        '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
     else:
-        cursor = db.cursor()
-        cursor.execute(query)
+        sql = """SELECT archivos.id, asunto, numero_oficio, fecha_creacion, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor, remitente, resumen, categorias.nombre, subcategorias.nombre 
+                 FROM archivos 
+                 INNER JOIN categorias on archivos.categoria_id = categorias.id
+                 INNER JOIN subcategorias on archivos.subcategoria_id = subcategorias.id
+                 """
+        cursor.execute(sql)
 
     archivos = cursor.fetchall()
-    return render_template('dashboard.html', archivos=archivos, search=search)
+    return render_template('dashboard.html', archivos=archivos)
 
 
 @app.route('/archivo/<int:archivo_id>')
@@ -164,10 +199,36 @@ def ver_archivo(archivo_id):
     if os.path.exists(archivo_path):
         archivos = os.listdir(archivo_path)
         if archivos:
+            registrar_historial(archivo_id, "visitado", f"Archivo visitado por usuario ID {current_user.id}")
             return send_from_directory(archivo_path, archivos[0])
     flash('Archivo no encontrado', 'danger')
     return redirect(url_for('dashboard'))
 
 
+@app.route('/archivo/<int:archivo_id>/eliminar', methods=['POST'])
+@login_required
+def eliminar_archivo(archivo_id):
+    cursor = db.cursor()
+    sql = "DELETE FROM archivos WHERE id = %s"
+    cursor.execute(sql, (archivo_id,))
+    db.commit()
+
+    registrar_historial(archivo_id, "eliminado", f"Archivo eliminado por usuario ID {current_user.id}")
+
+    flash('Archivo eliminado exitosamente')
+    return redirect(url_for('dashboard'))
+
+@app.route('/historial/<int:archivo_id>', methods=['GET'])
+@login_required
+def historial(archivo_id):
+    cursor = db.cursor()
+    sql = """SELECT accion, fecha, usuarios.nombre, detalles FROM historial_versiones
+         inner join usuarios on usuarios.id = historial_versiones.usuario_id
+         WHERE documento_id = %s"""
+    cursor.execute(sql, (archivo_id,))
+    versiones = cursor.fetchall()
+    return render_template('historial.html', versiones=versiones)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
