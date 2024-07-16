@@ -82,6 +82,10 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+@app.route('/contacto', methods=['GET'])
+def contacto():
+    if request.method ==  "GET":
+        return render_template("contacto.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

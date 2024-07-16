@@ -1,0 +1,116 @@
+.main-footer {
+  background-color: #4B193A; /* Color de fondo similar al de la imagen */
+  color: #ffffff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer-bottom {
+  background-color: #333333;
+  padding: 10px 0;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer-social-links {
+  margin-top: 10px;
+}
+
+.footer-social-links a {
+  color: #ffffff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.footer-social-links a:hover {
+  color: #ddd;
+}
+/* Top Bar */
+.top-bar {
+  background-color: #f5f5f5;
+  padding: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.top-links a {
+  color: #333;
+  margin: 0 15px;
+  text-decoration: none;
+}
+
+.social-icons a {
+  color: #333;
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+.social-icons a:hover {
+  color: #000;
+}
+
+/* Header Content */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  background-color: #fff;
+}
+
+.logo img {
+  max-width: 100px;
+  height: auto;
+}
+
+.main-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.main-nav ul li {
+  margin: 0 15px;
+}
+
+.main-nav ul li a {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.main-nav ul li a:hover {
+  color: #900;
+}
+
+.search-icon {
+  font-size: 18px;
+  color: #333;
+}
+
+.search-icon:hover {
+  color: #900;
+}
