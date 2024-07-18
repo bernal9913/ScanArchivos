@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'mysecret'
 app.config['UPLOAD_FOLDER'] = 'archivos'
 
 # Configuración de la base de datos
-db = MySQLdb.connect(user='bernal', passwd='bernal9913', host='localhost', db='digitalizacion_archivos')
+db = MySQLdb.connect(user='root', passwd='', host='localhost', db='digitalizacion_archivos')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -232,6 +232,29 @@ def historial(archivo_id):
     cursor.execute(sql, (archivo_id,))
     versiones = cursor.fetchall()
     return render_template('historial.html', versiones=versiones)
+
+
+@app.route('/dashboard_user', methods=['GET'])
+@login_required
+def dashboard_reducido():
+    search_query = request.args.get('search')
+    cursor = db.cursor()
+
+    if search_query:
+        sql = """SELECT archivos.id, asunto, numero_oficio, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor
+                 FROM archivos 
+                 WHERE asunto LIKE %s OR numero_oficio LIKE %s OR emisor LIKE %s
+                 """
+        cursor.execute(sql, (
+        '%' + search_query + '%', '%' + search_query + '%', '%' + search_query + '%'))
+    else:
+        sql = """SELECT archivos.id, asunto, numero_oficio, fecha_subida, unidad_administrativa, folio_inicial, folio_final, emisor 
+                 FROM archivos 
+                 """
+        cursor.execute(sql)
+
+    archivos = cursor.fetchall()
+    return render_template('repo_user.html', archivos=archivos)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard user{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Dashboard user</h1>
+  <form method="GET" action="{{ url_for('dashboard_reducido') }}">
+    <div class="form-group">
+      <input type="text" name="search" class="form-control" placeholder="Buscar...">
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </form>
+  <div class="table-responsive mt-4">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Asunto</th>
+          <th>Número de Oficio</th>
+          <th>Fecha de Subida</th>
+          <th>Unidad Administrativa</th>
+          <th>Folio Inicial</th>
+          <th>Folio Final</th>
+          <th>Emisor</th>
+          <th>Archivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for archivo in archivos %}
+        <tr data-href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}">
+          <td>{{ archivo[0] }}</td>
+          <td>{{ archivo[1] }}</td>
+          <td>{{ archivo[2] }}</td>
+          <td>{{ archivo[3] }}</td> <!-- Fecha de Subida -->
+          <td>{{ archivo[4] }}</td>
+          <td>{{ archivo[5] }}</td>
+          <td>{{ archivo[6] }}</td>
+          <td>{{ archivo[7] }}</td> <!-- Emisor -->
+          <td><a href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}" class="btn btn-info btn-sm">Ver</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var rows = document.querySelectorAll('tr[data-href]');
+        rows.forEach(function(row) {
+          row.addEventListener('click', function() {
+            window.location.href = row.getAttribute('data-href');
+          });
+        });
+      });
+    </script>
+  </div>
+</div>
+{% endblock %}
