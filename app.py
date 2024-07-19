@@ -234,6 +234,8 @@ def historial(archivo_id):
     return render_template('historial.html', versiones=versiones)
 
 
+
+
 @app.route('/dashboard_user', methods=['GET'])
 @login_required
 def dashboard_reducido():
@@ -255,6 +257,11 @@ def dashboard_reducido():
 
     archivos = cursor.fetchall()
     return render_template('repo_user.html', archivos=archivos)
+
+#inicio
+@app.route('/inicio')
+def inicio():
+    return render_template('inicio.html')
 
 
 if __name__ == '__main__':
