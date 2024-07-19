@@ -1,7 +1,7 @@
 .main-footer {
   background-color: #4B193A; /* Color de fondo similar al de la imagen */
   color: #ffffff;
-  padding: 20px 0;
+  padding: 0px 0;
   text-align: center;
 }
 
@@ -9,7 +9,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 10px 0;
   max-width: 1200px;
   margin: 0 auto;
 }
