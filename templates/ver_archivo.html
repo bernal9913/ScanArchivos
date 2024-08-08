@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Ver Archivo{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Detalles del Archivo</h1>
+  <p><strong>ID:</strong> {{ archivo[0] }}</p>
+  <p><strong>Asunto:</strong> {{ archivo[1] }}</p>
+  <p><strong>Número de Oficio:</strong> {{ archivo[2] }}</p>
+  <p><strong>Fecha de Creación:</strong> {{ archivo[3] }}</p>
+  <p><strong>Fecha de Subida:</strong> {{ archivo[4] }}</p>
+  <p><strong>Unidad Administrativa:</strong> {{ archivo[5] }}</p>
+  <p><strong>Folio Inicial:</strong> {{ archivo[6] }}</p>
+  <p><strong>Folio Final:</strong> {{ archivo[7] }}</p>
+  <p><strong>Emisor:</strong> {{ archivo[8] }}</p>
+  <p><strong>Remitente:</strong> {{ archivo[9] }}</p>
+  <p><strong>Resumen:</strong> {{ archivo[10] }}</p>
+  <p><strong>Categoría:</strong> {{ archivo[11] }}</p>
+  <p><strong>Subcategoría:</strong> {{ archivo[12] }}</p>
+    <a href="{{ url_for('ver_archivo_file', archivo_id = archivo[0] ) }}" class="btn btn-primary">Ver archivo</a>
+  <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Volver al Dashboard</a>
+<br><br>
+</div>
+{% endblock %}

@@ -4,16 +4,44 @@
 <div class="container">
   <h1 class="mt-5">Dashboard</h1>
   <form method="GET" action="{{ url_for('dashboard') }}">
-    <div class="form-group">
-      <input type="text" name="search" class="form-control" placeholder="Buscar...">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <input type="text" name="search_asunto" class="form-control" placeholder="Buscar por Asunto">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_num_oficio" class="form-control" placeholder="Buscar por Número de Oficio">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_fecha_creacion" class="form-control" placeholder="Buscar por Fecha de Creación">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_fecha_subida" class="form-control" placeholder="Buscar por Fecha de Subida">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_unidad_administrativa" class="form-control" placeholder="Buscar por Unidad Administrativa">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_emisor" class="form-control" placeholder="Buscar por Emisor">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_remitente" class="form-control" placeholder="Buscar por Remitente">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_categoria" class="form-control" placeholder="Buscar por Categoría">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_subcategoria" class="form-control" placeholder="Buscar por Subcategoría">
+      </div>
+      <div class="form-group col-md-3">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary">Buscar</button>
   </form>
+
   <div class="table-responsive mt-4">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Asunto</th>
           <th>Número de Oficio</th>
           <th>Fecha de Creación</th>
@@ -23,18 +51,15 @@
           <th>Folio Final</th>
           <th>Emisor</th>
           <th>Remitente</th>
-          <th>Resumen</th>
           <th>Categoría</th>
           <th>Subcategoría</th>
           <th>Archivo</th>
           <th>Historial</th>
-          <th>Eliminar</th>
         </tr>
       </thead>
       <tbody>
         {% for archivo in archivos %}
         <tr data-href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}">
-          <td>{{ archivo[0] }}</td>
           <td>{{ archivo[1] }}</td>
           <td>{{ archivo[2] }}</td>
           <td>{{ archivo[3] }}</td>
@@ -44,27 +69,25 @@
           <td>{{ archivo[7] }}</td>
           <td>{{ archivo[8] }}</td>
           <td>{{ archivo[9] }}</td>
-          <td>{{ archivo[10] }}</td>
           <td>{{ archivo[11] }}</td>
           <td>{{ archivo[12] }}</td>
           <td><a href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}" class="btn btn-info btn-sm">Ver</a></td>
           <td><a href="{{ url_for('historial', archivo_id=archivo[0]) }}" class="btn btn-secondary btn-sm">Historial</a></td>
-          <td><a href="{{ url_for('eliminar_archivo', archivo_id=archivo[0]) }}" class="btn btn-danger btn-sm">Eliminar</a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+  </div>
+
   <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var rows = document.querySelectorAll('tr[data-href]');
-        rows.forEach(function(row) {
-          row.addEventListener('click', function() {
-            window.location.href = row.getAttribute('data-href');
-          });
+    document.addEventListener('DOMContentLoaded', function() {
+      var rows = document.querySelectorAll('tr[data-href]');
+      rows.forEach(function(row) {
+        row.addEventListener('click', function() {
+          window.location.href = row.getAttribute('data-href');
         });
       });
-    </script>
-
-  </div>
+    });
+  </script>
 </div>
 {% endblock %}
