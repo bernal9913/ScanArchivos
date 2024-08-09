@@ -260,6 +260,8 @@ def dashboard_reducido():
 
 #inicio
 @app.route('/inicio')
+@login_required
+
 def inicio():
     return render_template('inicio.html')
 

@@ -1,24 +1,64 @@
-
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Inicio</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+      .invisible-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .invisible-table td {
+        border: none;
+        padding: 20px;
+        vertical-align: top;
+        width: 33.33%; /* Cada columna ocupa un tercio del ancho total */
+      }
+
+      .center-title {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
     {% extends "base.html" %}
 
-{% block title %}
-Inicio
-{% endblock %}
+    {% block title %}
+    Inicio
+    {% endblock %}
 
-{% block content %}
-<h1>Nombre del Programa</h1>
-{% endblock %}
- <br>
-  <br>
-  <br>
+    {% block content %}
+    <h1 class="center-title"> Archivero digital de la secretaria</h1>
+    <table class="invisible-table">
+      <tr>
+        <td>
+          <!-- Primer bloque de contenido -->
+           <img src="" alt="Sonora"  width="120" height="120">
+
+        </td>
+        <td>
+          <!-- Segundo bloque de contenido -->
+
+          <button class="btn btn-success">guardar archivos</button>
+          <button class="btn btn-secondary">ver archivos</button>
+        </td>
+        <td>
+          <!-- Tercer bloque de contenido -->
+
+                     <img src="" alt="Sonora"  width="120" height="120">
+
+
+        </td>
+      </tr>
+    </table>
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </body>
 </html>
