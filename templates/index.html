@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Subir Archivo{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Subir Archivo</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert alert-success">
+            {{ messages[0][1] }}
+          </div>
+        {% endif %}
+    {% endwith %}
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="asunto">Asunto</label>
+      <input type="text" name="asunto" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="numero_oficio">Número de Oficio</label>
+      <input type="text" name="numero_oficio" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="fecha_creacion">Fecha de Creación</label>
+      <input type="date" name="fecha_creacion" class="form-control" required>
+    </div>
+<div class="form-group">
+
+      <label for="unidad_administrativa">Unidad Administrativa</label>
+
+   <select name="unidad_administrativa" id="unidad_administrativa" class="form-control" required>
+    <option value="" disabled selected>Elija una opción</option>
+    {% for unidad in unidades_administrativas %}
+    <option value="{{ unidad[0] }}">{{ unidad[0] }}</option> <!-- El valor y el texto son el nombre -->
+    {% endfor %}
+</select>
+
+</div>
+
+
+
+    <div class="form-group">
+      <label for="folio_inicial">Folio Inicial</label>
+      <input type="text" name="folio_inicial" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="folio_final">Folio Final</label>
+      <input type="text" name="folio_final" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="emisor">Emisor</label>
+      <input type="text" name="emisor" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="remitente">Remitente</label>
+      <input type="text" name="remitente" class="form-control" required>
+    </div>
+
+
+      <div class="form-group">
+  <label for="categoria">Categoría</label>
+  <select name="categoria" id="categoria" class="form-control" onchange="updateSubcategorias()" required>
+    <option value="" disabled selected>Elija una opción</option>
+    {% for categoria in categorias %}
+    <option value="{{ categoria[0] }}">{{ categoria[1] }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="subcategoria">Subcategoría</label>
+  <select name="subcategoria" id="subcategoria" class="form-control" required>
+    <option value="" disabled selected>Elija una opción</option>
+  </select>
+</div>
+
+
+    <div class="form-group">
+      <label for="resumen">Resumen</label>
+      <textarea name="resumen" class="form-control" rows="3" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="archivo">Archivo</label>
+      <input type="file" name="archivo" class="form-control-file" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Subir</button>
+  </form>
+</div>
+ <br>
+  <br>
+  <br>
+    <br><br>
+
+    <script>
+  function updateSubcategorias() {
+    var categoriaId = document.getElementById('categoria').value;
+    var subcategoriaSelect = document.getElementById('subcategoria');
+
+    // Limpiar las subcategorías existentes
+    subcategoriaSelect.innerHTML = '<option value="" disabled selected>Elija una opción</option>';
+
+    if (categoriaId) {
+      // Obtener las subcategorías para la categoría seleccionada
+      fetch(`/get_subcategorias/${categoriaId}`)
+        .then(response => response.json())
+        .then(data => {
+          data.subcategorias.forEach(subcategoria => {
+            var option = document.createElement('option');
+            option.value = subcategoria.id;
+            option.text = subcategoria.nombre;
+            subcategoriaSelect.add(option);
+          });
+        });
+    }
+  }
+</script>
+{% endblock %}
+

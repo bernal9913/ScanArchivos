@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Registro Usuario</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block title %}Registrarse{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="mt-5">Registro</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alert alert-success">
+          {{ messages[0][1] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.nombre.label }}
+        {{ form.nombre(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.numero_empleado.label }}
+        {{ form.numero_empleado(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.rol.label }}
+        {{ form.rol(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.password.label }}
+        <div class="input-group">
+          {{ form.password(class="form-control", id="password") }}
+          <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" id="togglePassword">Mostrar</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form.confirm_password.label }}
+        <div class="input-group">
+          {{ form.confirm_password(class="form-control", id="confirm_password") }}
+          <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">Mostrar</button>
+          </div>
+        </div>
+      </div>
+      <!-- El campo nivel está oculto y no se muestra en el formulario -->
+      <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+      </div>
+    </form>
+    <p>Ya tienes una cuenta? <a href="{{ url_for('login') }}">Ingresa aquí</a></p>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const password = document.querySelector('#password');
+    const confirmPassword = document.querySelector('#confirm_password');
+    const togglePassword = document.querySelector('#togglePassword');
+    const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+
+    form.addEventListener('submit', function(event) {
+        if (password.value !== confirmPassword.value) {
+            alert('Las contraseñas deben coincidir.');
+            event.preventDefault();
+        }
+    });
+
+    togglePassword.addEventListener('click', function() {
+        if (password.type === 'password') {
+            password.type = 'text';
+            togglePassword.textContent = 'Ocultar';
+        } else {
+            password.type = 'password';
+            togglePassword.textContent = 'Mostrar';
+        }
+    });
+
+    toggleConfirmPassword.addEventListener('click', function() {
+        if (confirmPassword.type === 'password') {
+            confirmPassword.type = 'text';
+            toggleConfirmPassword.textContent = 'Ocultar';
+        } else {
+            confirmPassword.type = 'password';
+            toggleConfirmPassword.textContent = 'Mostrar';
+        }
+    });
+});
+</script>
+
+{% endblock %}
+<br>
+<br>
+<br>
+
+</body>
+</html>

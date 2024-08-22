@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Consultar Archivos{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Consultar Archivos</h1>
+  <br>
+  <button id="toggle-filters" class="btn btn-secondary mb-3">Busqueda por Filtros</button>
+    <a href="{{ url_for('dashboard_reducido') }}" class="btn btn-secondary mb-3">Mostrar Todos</a>
+
+
+  <form id="filter-form" method="GET" action="{{ url_for('dashboard_reducido') }}" style="display: none;">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <input type="text" name="search_asunto" class="form-control" placeholder="Buscar por Asunto">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_num_oficio" class="form-control" placeholder="Buscar por Número de Oficio">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_fecha_subida" class="form-control" placeholder="Buscar por Fecha de Subida">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_unidad_administrativa" class="form-control" placeholder="Buscar por Unidad Administrativa">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_folio_inicial" class="form-control" placeholder="Buscar por Folio Inicial">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_folio_final" class="form-control" placeholder="Buscar por Folio Final">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_emisor" class="form-control" placeholder="Buscar por Emisor">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_remitente" class="form-control" placeholder="Buscar por Remitente">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_categoria" class="form-control" placeholder="Buscar por Categoría">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_subcategoria" class="form-control" placeholder="Buscar por Subcategoría">
+      </div>
+      <div class="form-group col-md-3">
+        <input type="text" name="search_resumen" class="form-control" placeholder="Buscar por Resumen">
+      </div>
+      <div class="form-group col-md-3">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="table-responsive mt-4">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Asunto</th>
+          <th>Número de Oficio</th>
+          <th>Fecha de Creación</th>
+          <th>Fecha de Subida</th>
+          <th>Unidad Administrativa</th>
+          <th>Folio Inicial</th>
+          <th>Folio Final</th>
+          <th>Emisor</th>
+          <th>Remitente</th>
+          <th>Categoría</th>
+          <th>Subcategoría</th>
+          <th>Resumen</th>
+          <th>Descargar Archivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for archivo in archivos %}
+        <tr data-href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}">
+          <td>{{ archivo[1] }}</td>
+          <td>{{ archivo[2] }}</td>
+          <td>{{ archivo[3] }}</td>
+          <td>{{ archivo[4] }}</td>
+          <td>{{ archivo[5] }}</td>
+          <td>{{ archivo[6] }}</td>
+          <td>{{ archivo[7] }}</td>
+          <td>{{ archivo[8] }}</td>
+          <td>{{ archivo[9] }}</td>
+          <td>{{ archivo[11] }}</td>
+          <td>{{ archivo[12] }}</td>
+          <td>{{ archivo[10] }}</td>
+          <td><a href="{{ url_for('ver_archivo', archivo_id=archivo[0]) }}" class="btn btn-info btn-sm">Ver</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+<br>
+<br>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+      var toggleButton = document.getElementById('toggle-filters');
+      var filterForm = document.getElementById('filter-form');
+
+      toggleButton.addEventListener('click', function() {
+        if (filterForm.style.display === "none" || filterForm.style.display === "") {
+          filterForm.style.display = "block";
+          toggleButton.textContent = "Ocultar Filtros";
+        } else {
+          filterForm.style.display = "none";
+          toggleButton.textContent = "Buscar por Filtros";
+        }
+      });
+    });
+  </script>
+</div>
+{% endblock %}

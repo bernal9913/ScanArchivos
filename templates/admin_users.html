@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Usuarios{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Gestionar Usuarios</h1>
+  <br>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="alert alert-success">
+        {{ messages[0][1] }}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Botón para mostrar/ocultar filtros -->
+  <button id="toggleFilters" class="btn btn-primary mb-3">Buscar Usuario</button>
+  <button id="showAll" class="btn btn-secondary mb-3">Mostrar Todos</button>
+
+  <!-- Filtros -->
+  <form method="GET" action="{{ url_for('manage_users') }}" id="filterForm" style="display: none;">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <input type="text" name="search_name" class="form-control" placeholder="Buscar por nombre" value="{{ request.args.get('search_name', '') }}">
+      </div>
+      <div class="form-group col-md-6">
+        <input type="text" name="search_number" class="form-control" placeholder="Buscar por número de empleado" value="{{ request.args.get('search_number', '') }}">
+      </div>
+      <div class="form-group col-md-12 mt-2">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Número de Empleado</th>
+        <th>Rol</th>
+        <th>Nivel</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user[1] }}</td>
+        <td>{{ user[2] }}</td>
+        <td>{{ user[3] }}</td>
+        <td>{{ user[5] }}</td>
+        <td>
+          <form id="action-form-{{ user[0] }}" method="POST" action="{{ url_for('manage_users') }}">
+            <input type="hidden" name="user_id" value="{{ user[0] }}">
+            <input type="hidden" name="action" value="">
+            <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('{{ user[0] }}', 'make_admin')">Hacer Admin</button>
+            <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('{{ user[0] }}', 'make_user')">Hacer Usuario</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('{{ user[0] }}', 'delete')">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<br>
+  <script>
+    document.getElementById('toggleFilters').addEventListener('click', function() {
+      var filterForm = document.getElementById('filterForm');
+      if (filterForm.style.display === 'none') {
+        filterForm.style.display = 'block';
+      } else {
+        filterForm.style.display = 'none';
+      }
+    });
+
+    document.getElementById('showAll').addEventListener('click', function() {
+      // Redirige a la misma página sin parámetros de búsqueda
+      window.location.href = "{{ url_for('manage_users') }}";
+    });
+
+    function confirmAction(userId, action) {
+      var message;
+      if (action === 'make_admin') {
+        message = '¿Estás seguro de que quieres hacer a este usuario admin?';
+      } else if (action === 'make_user') {
+        message = '¿Estás seguro de que quieres cambiar el rol de este usuario a usuario?';
+      } else if (action === 'delete') {
+        message = '¿Estás seguro de que quieres eliminar este usuario?';
+      }
+
+      if (confirm(message)) {
+        var form = document.getElementById('action-form-' + userId);
+        form.querySelector('input[name="action"]').value = action;
+        form.submit();
+      }
+    }
+
+    // Limpiar campos de búsqueda después de enviar el formulario
+    document.querySelector('#filterForm').addEventListener('submit', function() {
+      setTimeout(function() {
+        document.querySelector('input[name="search_name"]').value = '';
+        document.querySelector('input[name="search_number"]').value = '';
+      }, 100);
+    });
+  </script>
+</div>
+{% endblock %}
+

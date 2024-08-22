@@ -1,0 +1,88 @@
+<!doctype html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+
+
+      .invisible-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .invisible-table td {
+        border: none;
+        padding: 20px;
+        vertical-align: top;
+        width: 33.33%;
+      }
+
+      .center-title {
+        text-align: center;
+        margin-top: 20px;
+          color: #000000;
+      }
+
+      .left-align-title {
+        text-align: left;
+        margin-top: 20px;
+        margin-left: 20px;
+          color: #000000;
+      }
+    </style>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert alert-success">
+            {{ messages[0][1] }}
+          </div>
+        {% endif %}
+    {% endwith %}
+   <style>
+      body {
+        background-image: url('static/image/fondo-inicio.jpg');
+        background-size: cover; /* Ajusta el tamaño de la imagen para cubrir toda la pantalla */
+        background-position: center; /* Centra la imagen */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+      }
+    </style>
+  </head>
+  <body>
+
+
+    {% extends "base.html" %}
+
+    {% block title %}
+    Inicio
+    {% endblock %}
+
+    {% block content %}
+            <h4 class="left-align-title">Bienvenido!!, {{ usuario }}</h4>
+        <br>
+
+    <h2 class="center-title"> Gestor Digital de Archivos </h2>
+        <br>
+    <table class="invisible-table">
+      <tr>
+
+        <td>
+        </td>
+
+        <td class="text-center"> <!-- Centra los botones en esta celda -->
+          <a href="{{ url_for('index') }}" class="btn btn-success mx-2">Guardar archivos</a>
+          <a href="{{ url_for('dashboard_reducido') }}" class="btn btn-secondary mx-2">Ver archivos</a>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table>
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

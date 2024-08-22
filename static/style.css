@@ -1,0 +1,175 @@
+
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+
+.footer-social-links {
+  margin-top: 10px;
+}
+
+.footer-social-links a {
+  color: #ffffff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.footer-social-links a:hover {
+  color: #ddd;
+}
+/* Top Bar */
+.top-bar {
+  background-color: #f5f5f5;
+  padding: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.top-links a {
+  color: #333;
+  margin: 0 15px;
+  text-decoration: none;
+}
+
+.social-icons a {
+  color: #333;
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+.social-icons a:hover {
+  color: #000;
+}
+
+/* Header Content */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #fff;
+}
+
+.logo img {
+  width: 200px;
+  height: 80px;
+}
+
+.main-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.main-nav ul li {
+  margin: 0 15px;
+}
+
+.main-nav ul li a {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.main-nav ul li a:hover {
+  color: #900;
+}
+
+.search-icon {
+  font-size: 18px;
+  color: #333;
+}
+
+.search-icon:hover {
+  color: #900;
+}
+.main-footer .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.main-footer .footer-bottom img {
+    margin-right: 20px;
+}
+
+
+
+.main-footer {
+  background-color: #4B193A;
+  color: #ffffff;
+  padding: 0px 0;
+  text-align: center;
+}
+
+.footer-bottom {
+  background-color: #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  padding: 10px;
+}
+
+.footer-bottom img {
+  margin-right: 20px; /* Espacio entre la imagen y el texto */
+}
+
+.footer-bottom p {
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* Hace que el contenedor principal ocupe el espacio disponible */
+}
+
+
+/* Ajustes específicos para el pie de página */
+.footer-bottom {
+  background-color: #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  padding: 10px;
+}
+
+.footer-bottom img {
+  margin-right: 6px; /* Espacio entre la imagen y el texto */
+}
+
+.footer-bottom p {
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+}
